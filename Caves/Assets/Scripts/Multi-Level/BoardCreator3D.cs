@@ -236,6 +236,25 @@ public class BoardCreator3D : MonoBehaviour
                 }
             }
         }
+        //Redo Room[0] to ensure entry room not destroyed
+        Room3D EntryRoom = rooms[0];
+        //Debug.Log("Total Rooms " + rooms.Length + " Room # " + i);
+        int EntryDepth = EntryRoom.Depth - 1;
+        // ... and for each room go through it's width.
+        for (int j = 0; j < EntryRoom.roomWidth; j++)
+        {
+            int xCoord = EntryRoom.xPos + j;
+
+            // For each horizontal tile, go up vertically through the room's height.
+            for (int k = 0; k < EntryRoom.roomHeight; k++)
+            {
+                int yCoord = EntryRoom.yPos + k;
+
+                // The coordinates in the jagged array are based on the room's position and it's width and height.
+                tiles[EntryDepth][xCoord][yCoord] = EntryRoom.FloorType;
+            }
+        }
+
         //Debug.Log("Rooms created in array.");
     }
 
@@ -276,6 +295,25 @@ public class BoardCreator3D : MonoBehaviour
                 tiles[CorridDepth][xCoord][yCoord] = currentCorridor.FloorType;
             }
         }
+        //Redo Room[0] to ensure entry room not destroyed
+        Room3D EntryRoom = rooms[0];
+        //Debug.Log("Total Rooms " + rooms.Length + " Room # " + i);
+        int EntryDepth = EntryRoom.Depth - 1;
+        // ... and for each room go through it's width.
+        for (int j = 0; j < EntryRoom.roomWidth; j++)
+        {
+            int xCoord = EntryRoom.xPos + j;
+
+            // For each horizontal tile, go up vertically through the room's height.
+            for (int k = 0; k < EntryRoom.roomHeight; k++)
+            {
+                int yCoord = EntryRoom.yPos + k;
+
+                // The coordinates in the jagged array are based on the room's position and it's width and height.
+                tiles[EntryDepth][xCoord][yCoord] = EntryRoom.FloorType;
+            }
+        }
+
     }
 
     void CalculateWalls()

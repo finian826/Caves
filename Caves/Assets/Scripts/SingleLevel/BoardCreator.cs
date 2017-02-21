@@ -34,6 +34,7 @@ public class BoardCreator : MonoBehaviour
     public GameObject Torch4;
     public GameObject Torch8;
     public GameObject EntryHall;
+    public GameObject[] Props;                                  // Array to hold props for the rooms
     public GameObject[] floorTiles;                           // An array of floor tile prefabs for 2D generation.
     public GameObject[] wallTiles;                            // An array of wall tile prefabs for 2D generation.
     public GameObject[] outerWallTiles;                       // An array of outer wall tile prefabs for 2D generation.
@@ -49,7 +50,7 @@ public class BoardCreator : MonoBehaviour
     private float[,] Walls3D = new float[4, 6] { { -5.47f, -2.94f, -2.88f, 0f, 0f, 0f }, { -2.87f, -2.94f, 5.47f, 0f, 90f, 0f }, { 5.49f, -2.94f, -2.88f, 0f, 0f, 0f }, { -2.87f, -2.94f, -5.55f, 0f, 90f, 0f } };
     private float[,] Torches3d = new float[4, 6] { { -5.18f, .332f, 0f, 0f, 180f, 0f }, { 0f, .332f, -5.259f, 0f, 90f, 0f }, { 5.519f, .332f, 0f, 0f, 0f, 0f }, { 0f, .332f, 5.22f, 0f, 270f, 0f } };
     private float[,] EntryRotation = new float[4, 6] { { 13.39f, 3.23f, -1.7f, 0f, 0f, 0f }, { -1.68f, 3.23f, -13.31f, 0f, 90f, 0f }, { -13.32f, 3.23f, 1.67f, 0f, 180f, 0f }, { 1.66f, 3.23f, 13.41f, 0f, 270f, 0f } };
-
+    private float[,] PropRotate = new float[4, 3] { { 0f, 0f, 0f }, { 0f, 90f, 0f }, { 0f, 180f, 0f }, { 0f, 270f, 0f } };
 
     private void Start()
     {
@@ -180,6 +181,24 @@ public class BoardCreator : MonoBehaviour
                 }
             }
         }
+        //Redo room[0] to ensure the entry is not destroyed by overlap.
+        Room EntryRoom = rooms[0];
+
+        // ... and for each room go through it's width.
+        for (int j = 0; j < EntryRoom.roomWidth; j++)
+        {
+            int xCoord = EntryRoom.xPos + j;
+
+            // For each horizontal tile, go up vertically through the room's height.
+            for (int k = 0; k < EntryRoom.roomHeight; k++)
+            {
+                int yCoord = EntryRoom.yPos + k;
+
+                // The coordinates in the jagged array are based on the room's position and it's width and height.
+                tiles[xCoord][yCoord] = EntryRoom.FloorType;
+            }
+        }
+
         //Debug.Log("Rooms created in array.");
     }
 
@@ -219,9 +238,26 @@ public class BoardCreator : MonoBehaviour
                 tiles[xCoord][yCoord] = currentCorridor.FloorType;
             }
         }
-    }
+        //Redo room[0] to ensure the entry is not destroyed by overlap.
+        Room EntryRoom = rooms[0];
 
-    void InstantiateTiles()
+        // ... and for each room go through it's width.
+        for (int j = 0; j < EntryRoom.roomWidth; j++)
+        {
+            int xCoord = EntryRoom.xPos + j;
+
+            // For each horizontal tile, go up vertically through the room's height.
+            for (int k = 0; k < EntryRoom.roomHeight; k++)
+            {
+                int yCoord = EntryRoom.yPos + k;
+
+                // The coordinates in the jagged array are based on the room's position and it's width and height.
+                tiles[xCoord][yCoord] = EntryRoom.FloorType;
+            }
+        }
+     }
+
+        void InstantiateTiles()
     {
         // Go through all the tiles in the jagged array...
         for (int i = 0; i < tiles.Length; i++)
@@ -557,6 +593,15 @@ public class BoardCreator : MonoBehaviour
                 tileobject.transform.parent = board.transform;
             }
         }
+        /*else
+        {
+            //Place Prop.
+
+            int propItem = UnityEngine.Random.Range(0, Props.Length);
+            Vector3 propLoc = new Vector3(xpos, ypos, zpos);
+            GameObject propObject = Instantiate(Props[propItem], propLoc, Quaternion.identity) as GameObject;
+            
+        }*/
 
     }
     
