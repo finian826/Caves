@@ -37,6 +37,7 @@ public class BoardCreator3D : MonoBehaviour
     public GameObject Torch8;
     public GameObject Stairs;
     public GameObject EntryHall;
+    public GameObject[] Props;                                  // Array to hold props for the rooms
     public GameObject player;
 
    
@@ -50,9 +51,10 @@ public class BoardCreator3D : MonoBehaviour
 
     // Float array to hold offsets for walls and torches from base axis of core room.
     private float[,] Walls3D = new float[4, 6] { { -5.47f, -2.94f, -2.88f, 0f, 0f, 0f }, { -2.87f, -2.94f, 5.47f, 0f, 90f, 0f }, { 5.49f, -2.94f, -2.88f, 0f, 0f, 0f }, { -2.87f, -2.94f, -5.55f, 0f, 90f, 0f } };
-    private float[,] Torches3d = new float[4, 6] { { -5.18f, .332f, 0f, 0f, 180f, 0f }, { 0f, .332f, -5.259f, 0f, 90f, 0f }, { 5.519f, .332f, 0f, 0f, 0f, 0f }, { 0f, .332f, 5.22f, 0f, 270f, 0f } };
+    private float[,] Torches3d = new float[4, 6] { { -5.18f, .332f, 0f, 0f, 180f, 0f }, { 0f, .332f, -5.259f, 0f, 90f, 0f }, { 5.193f, .332f, 0f, 0f, 0f, 0f }, { 0f, .332f, 5.22f, 0f, 270f, 0f } };
     private float[,] EntryRotation = new float[4, 6] { { 13.39f, 3.23f, -1.7f, 0f, 0f, 0f }, { -1.68f, 3.23f, -13.31f, 0f, 90f, 0f }, { -13.32f, 3.23f, 1.67f, 0f, 180f, 0f }, { 1.66f, 3.23f, 13.41f, 0f, 270f, 0f } };
     private float[,] DepthStairs = new float[4, 6] { { 13.41f, -2.58f, -1.66f, 0f, 0f, 0f }, { -1.67f, -2.6f, -13.43f, 0f, 90f, 0f }, { -13.4f, -2.61f, 1.69f, 0f, 180f, 0f }, { 1.67f, -2.6f, 13.43f, 0f, 270f, 0f } };
+    private float[,] PropRotate = new float[4, 3] { { 0f, 0f, 0f }, { 0f, 90f, 0f }, { 0f, 180f, 0f }, { 0f, 270f, 0f } };
 
 
     private void Start()
@@ -560,6 +562,7 @@ public class BoardCreator3D : MonoBehaviour
         float TorchPlace = 0f;
         float TorchValue = 0f;
         float ValueLow, ValueHi;
+        int PropOffset = 0;
 
         TorchValue = UnityEngine.Random.Range(0, 99);
         ValueHi = TorchValue + 15;
@@ -644,6 +647,34 @@ public class BoardCreator3D : MonoBehaviour
                 tileobject.transform.Rotate(xrotation, yrotation, zrotation);
                 //assign torch to main gameboard
                 tileobject.transform.parent = board.transform;
+            }
+        }
+        else
+        {
+            if (UnityEngine.Random.Range(0, 150) <= 35)
+            {
+                //Place Prop.
+                if (walltype.Equals("W") == true)
+                {
+                    PropOffset = 1;
+                }
+                if (walltype.Equals("E") == true)
+                {
+                    PropOffset = 3;
+                }
+                if (walltype.Equals("N") == true)
+                {
+                    PropOffset = 2;
+                }
+                if (walltype.Equals("S") == true)
+                {
+                    PropOffset = 0;
+                }
+                int propItem = UnityEngine.Random.Range(0, Props.Length);
+                Vector3 propLoc = new Vector3(xpos, ypos, zpos);
+                GameObject propObject = Instantiate(Props[propItem], propLoc, Quaternion.identity) as GameObject;
+                propObject.transform.Rotate(PropRotate[PropOffset, 0], PropRotate[PropOffset, 1], PropRotate[PropOffset, 2]);
+                propObject.transform.parent = board.transform;
             }
         }
 
